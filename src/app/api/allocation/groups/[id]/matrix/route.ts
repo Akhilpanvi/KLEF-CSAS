@@ -8,7 +8,7 @@ import { requireSession, requireRole } from "@/lib/auth/session";
 import { getGroupDetail, bumpStatus, type AllocationStatus } from "@/lib/allocation/groupService";
 
 const schema = z.object({
-  unit: z.string().regex(/^[0-9a-fA-F]{24}$/),
+  department: z.string().regex(/^[0-9a-fA-F]{24}$/),
   sectionNumber: z.coerce.number().int().min(1),
   studentCount: z.coerce.number().int().min(0, "Must be 0 or more"),
 });
@@ -19,7 +19,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     requireRole(session, "TIMETABLE_ADMIN", "SUPER_ADMIN");
     await dbConnect();
     const { id } = await ctx.params;
-    const { unit, sectionNumber, studentCount } = schema.parse(await req.json());
+    const { department, sectionNumber, studentCount } = schema.parse(await req.json());
 
     const group = await AllocationGroup.findById(id);
     if (!group) return fail("Allocation group not found", 404);
@@ -27,15 +27,15 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
 
     const current = await getGroupDetail(id);
     if (!current) return fail("Allocation group not found", 404);
-    if (!current.demandRows.some((r) => r.unitId === unit)) {
-      return fail("Unit has no demand in this allocation group", 422);
+    if (!current.demandRows.some((r) => r.departmentId === department)) {
+      return fail("Department has no demand in this allocation group", 422);
     }
     if (sectionNumber > current.requiredSections) {
       return fail(`Section S${sectionNumber} does not exist (only ${current.requiredSections} required)`, 422);
     }
 
     await SectionAllocation.findOneAndUpdate(
-      { allocationGroup: id, unit, sectionNumber },
+      { allocationGroup: id, department, sectionNumber },
       { studentCount },
       { upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
     );

@@ -44,7 +44,7 @@ export interface GroupDetail {
   grandTotal: number;
   requiredSections: number;
   departmentTotals: { departmentId: string; departmentCode: string; total: number; pct: number }[];
-  demandRows: { departmentId: string; departmentCode: string; unitId: string; unitCode: string; unitName: string; studentCount: number; pctOfDept: number }[];
+  demandRows: { departmentId: string; departmentCode: string; studentCount: number }[];
   clusters: {
     cluster1Sections: number;
     cluster2Sections: number;
@@ -52,7 +52,7 @@ export interface GroupDetail {
     cluster2Pct: number;
     ranges: ClusterRanges;
   };
-  specializationRules: { unitId: string; specialization: string; cluster: 1 | 2 }[];
+  specializationRules: { departmentId: string; specialization: string; cluster: 1 | 2 }[];
   matrix: ReturnType<typeof computeLiveMatrix>;
   validation: ValidationResult;
   finalizedAt: string | null;
@@ -75,14 +75,14 @@ export async function getGroupDetail(groupId: string): Promise<GroupDetail | nul
 
   const rules = await SpecializationClusterRule.find({ allocationGroup: group._id }).lean();
   const specRules: SpecRule[] = rules.map((r) => ({
-    unitId: String(r.unit),
+    departmentId: String(r.department),
     specialization: r.specialization,
     cluster: r.cluster as 1 | 2,
   }));
 
   const overrideDocs = await SectionAllocation.find({ allocationGroup: group._id }).lean();
   const overrides: OverrideCell[] = overrideDocs.map((o) => ({
-    unitId: String(o.unit),
+    departmentId: String(o.department),
     sectionNumber: o.sectionNumber,
     studentCount: o.studentCount,
   }));
@@ -103,11 +103,7 @@ export async function getGroupDetail(groupId: string): Promise<GroupDetail | nul
     ...d,
     pct: ratio(d.total, demand.grandTotal),
   }));
-  const deptTotalMap = new Map(demand.departmentTotals.map((d) => [d.departmentId, d.total]));
-  const demandRows = demand.rows.map((r) => ({
-    ...r,
-    pctOfDept: ratio(r.studentCount, deptTotalMap.get(r.departmentId) ?? 0),
-  }));
+  const demandRows = demand.rows;
 
   const regulation = course.regulation as unknown as { _id: unknown; code: string };
   const semester = course.semester as unknown as { _id: unknown; number: number; name: string };
@@ -194,7 +190,7 @@ export async function listGroups(): Promise<GroupListRow[]> {
  * capacity / cluster split / specialization mapping. Changing any of those
  * shifts section ranges, so partial overrides can silently strand or drop
  * students (an override cell can look "in range" under the new config while
- * the rest of that unit's old overrides are dropped, under-allocating it).
+ * the rest of that department's old overrides are dropped, under-allocating it).
  * Clearing all overrides on structural change keeps the matrix correct;
  * fine-grained manual edits are meant to happen after configuration settles.
  */

@@ -1,7 +1,7 @@
 import Papa from "papaparse";
 import type { GroupDetail } from "./groupService";
 
-export type ReportType = "course" | "category" | "department" | "unit" | "section" | "cluster";
+export type ReportType = "course" | "category" | "department" | "allocation" | "section" | "cluster";
 
 export function buildReportRows(detail: GroupDetail, type: ReportType): Record<string, string | number>[] {
   switch (type) {
@@ -33,10 +33,9 @@ export function buildReportRows(detail: GroupDetail, type: ReportType): Record<s
         totalStudents: d.total,
         percentOfCourse: d.pct,
       }));
-    case "unit":
+    case "allocation":
       return detail.matrix.rows.map((r) => ({
         department: r.departmentCode,
-        unit: r.unitCode,
         specialization: r.specialization,
         cluster: r.cluster ?? "Unassigned",
         demandCount: r.demandCount,

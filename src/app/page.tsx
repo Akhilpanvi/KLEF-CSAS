@@ -2,17 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  BookOpen,
-  Building2,
-  Layers,
-  Tags,
-  FileStack,
-  CalendarRange,
-  CheckCircle2,
-  PauseCircle,
-  Archive,
-} from "lucide-react";
+import { BookOpen, Building2, Tags, FileStack, CalendarRange, CheckCircle2, PauseCircle, Archive } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { LoadingState, ErrorState } from "@/components/ui/States";
 import { apiGet } from "@/lib/apiClient";
@@ -20,7 +10,6 @@ import { apiGet } from "@/lib/apiClient";
 interface DashboardStats {
   departments: number;
   activeDepartments: number;
-  units: number;
   categories: number;
   regulations: number;
   semesters: number;
@@ -32,7 +21,6 @@ interface DashboardStats {
 
 const MASTER_CARDS = [
   { key: "departments", label: "Departments", href: "/departments", icon: Building2, color: "text-blue-600 bg-blue-50" },
-  { key: "units", label: "Units", href: "/units", icon: Layers, color: "text-violet-600 bg-violet-50" },
   { key: "categories", label: "Course Categories", href: "/course-categories", icon: Tags, color: "text-amber-600 bg-amber-50" },
   { key: "regulations", label: "Regulations", href: "/regulations", icon: FileStack, color: "text-rose-600 bg-rose-50" },
   { key: "semesters", label: "Semesters", href: "/semesters", icon: CalendarRange, color: "text-teal-600 bg-teal-50" },

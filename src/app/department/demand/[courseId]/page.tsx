@@ -20,7 +20,7 @@ export default function DemandEntryPage() {
   const toast = useToast();
 
   const [detail, setDetail] = useState<DemandDetailDTO | null>(null);
-  const [counts, setCounts] = useState<Record<string, string>>({});
+  const [count, setCount] = useState("0");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -31,23 +31,19 @@ export default function DemandEntryPage() {
     apiGet<DemandDetailDTO>(`/api/department/demand/${courseId}`)
       .then((data) => {
         setDetail(data);
-        setCounts(Object.fromEntries(data.items.map((i) => [i.unit, String(i.studentCount)])));
+        setCount(String(data.totalStudents));
       })
       .catch((err) => setError(err instanceof Error ? err.message : "Failed to load demand"))
       .finally(() => setLoading(false));
   }, [courseId]);
 
   const locked = detail?.status === "SUBMITTED";
-  const total = detail?.units.reduce((sum, u) => sum + (Number(counts[u._id]) || 0), 0) ?? 0;
-
-  function buildItems() {
-    return (detail?.units ?? []).map((u) => ({ unit: u._id, studentCount: Number(counts[u._id]) || 0 }));
-  }
+  const total = Number(count) || 0;
 
   async function handleSave() {
     setSaving(true);
     try {
-      const res = await apiPut<{ status: string }>(`/api/department/demand/${courseId}`, { items: buildItems() });
+      const res = await apiPut<{ status: string }>(`/api/department/demand/${courseId}`, { totalStudents: total });
       setDetail((prev) => (prev ? { ...prev, status: res.status as typeof prev.status } : prev));
       toast.success("Draft saved");
     } catch (err) {
@@ -60,7 +56,7 @@ export default function DemandEntryPage() {
   async function handleSubmit() {
     setSubmitting(true);
     try {
-      await apiPut(`/api/department/demand/${courseId}`, { items: buildItems() });
+      await apiPut(`/api/department/demand/${courseId}`, { totalStudents: total });
       await apiPost(`/api/department/demand/${courseId}/submit`, {});
       toast.success("Demand submitted");
       router.push("/department/demand");
@@ -88,35 +84,21 @@ export default function DemandEntryPage() {
       />
 
       <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-3">
-        {detail.units.length === 0 ? (
-          <p className="text-sm text-slate-500">No units are configured for your department yet.</p>
-        ) : (
-          detail.units.map((u) => (
-            <div key={u._id} className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-medium text-slate-700">{u.code}</p>
-                <p className="text-xs text-slate-400">{u.name}</p>
-              </div>
-              <Input
-                type="number"
-                min={0}
-                step={1}
-                disabled={locked}
-                value={counts[u._id] ?? "0"}
-                onChange={(e) => setCounts({ ...counts, [u._id]: e.target.value })}
-                className="w-28 text-right"
-              />
-            </div>
-          ))
-        )}
-
-        <div className="flex items-center justify-between border-t border-slate-200 pt-3">
-          <p className="text-sm font-semibold text-slate-900">Department Total</p>
-          <p className="text-sm font-semibold text-slate-900">{total}</p>
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm font-medium text-slate-700">Student Count</p>
+          <Input
+            type="number"
+            min={0}
+            step={1}
+            disabled={locked}
+            value={count}
+            onChange={(e) => setCount(e.target.value)}
+            className="w-28 text-right"
+          />
         </div>
       </div>
 
-      {!locked && detail.units.length > 0 && (
+      {!locked && (
         <div className="flex justify-end gap-2 mt-4">
           <Button variant="secondary" onClick={handleSave} loading={saving}>
             Save Draft

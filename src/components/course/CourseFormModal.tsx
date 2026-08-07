@@ -16,6 +16,8 @@ interface CourseFormModalProps {
   onClose: () => void;
   onSaved: () => void;
   course?: CourseDTO | null;
+  /** Department-scoped Module 1: Offered By is fixed to the logged-in department, never client-selectable. */
+  fixedOfferedBy?: { id: string; code: string };
 }
 
 interface FormState {
@@ -65,7 +67,7 @@ function emptyForm(): FormState {
   };
 }
 
-export function CourseFormModal({ open, onClose, onSaved, course }: CourseFormModalProps) {
+export function CourseFormModal({ open, onClose, onSaved, course, fixedOfferedBy }: CourseFormModalProps) {
   const { departments, categories, regulations, semesters, courseTypes, refetchCourseTypes } = useMasterOptions();
   const [form, setForm] = useState<FormState>(emptyForm());
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -97,10 +99,10 @@ export function CourseFormModal({ open, onClose, onSaved, course }: CourseFormMo
         status: course.status,
       });
     } else {
-      setForm(emptyForm());
+      setForm({ ...emptyForm(), offeredByDepartment: fixedOfferedBy?.id ?? "" });
     }
     setErrors({});
-  }, [open, course]);
+  }, [open, course, fixedOfferedBy]);
 
   function toggleOfferedTo(id: string) {
     setForm((prev) => ({
@@ -283,36 +285,42 @@ export function CourseFormModal({ open, onClose, onSaved, course }: CourseFormMo
           </div>
 
           <FieldWrapper label="Offered By Department" htmlFor="c-offby" required error={errors.offeredByDepartment}>
-            <Select
-              id="c-offby"
-              value={form.offeredByDepartment}
-              onChange={(e) => setForm({ ...form, offeredByDepartment: e.target.value })}
-              required
-            >
-              <option value="">Select department</option>
-              {departments.map((d) => (
-                <option key={d._id} value={d._id} disabled={!d.isActive && d._id !== idOf(course?.offeredByDepartment)}>
-                  {d.code} — {d.name} {!d.isActive ? "(inactive)" : ""}
-                </option>
-              ))}
-            </Select>
+            {fixedOfferedBy ? (
+              <Input id="c-offby" value={fixedOfferedBy.code} disabled />
+            ) : (
+              <Select
+                id="c-offby"
+                value={form.offeredByDepartment}
+                onChange={(e) => setForm({ ...form, offeredByDepartment: e.target.value })}
+                required
+              >
+                <option value="">Select department</option>
+                {departments.map((d) => (
+                  <option key={d._id} value={d._id} disabled={!d.isActive && d._id !== idOf(course?.offeredByDepartment)}>
+                    {d.code} — {d.name} {!d.isActive ? "(inactive)" : ""}
+                  </option>
+                ))}
+              </Select>
+            )}
           </FieldWrapper>
 
           <FieldWrapper
             label="Offered To Departments"
             error={errors.offeredToDepartments}
-            hint="Select every parent department this course is offered to. Units are handled in Module 2."
+            hint="Select every department this course is offered to."
           >
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 rounded-lg border border-slate-300 p-3">
-              {departments.map((d) => (
-                <label key={d._id} className="flex items-center gap-2 text-sm text-slate-700">
-                  <Checkbox
-                    checked={form.offeredToDepartments.includes(d._id)}
-                    onChange={() => toggleOfferedTo(d._id)}
-                  />
-                  {d.code}
-                </label>
-              ))}
+              {departments
+                .filter((d) => d._id !== (fixedOfferedBy?.id ?? idOf(course?.offeredByDepartment)))
+                .map((d) => (
+                  <label key={d._id} className="flex items-center gap-2 text-sm text-slate-700">
+                    <Checkbox
+                      checked={form.offeredToDepartments.includes(d._id)}
+                      onChange={() => toggleOfferedTo(d._id)}
+                    />
+                    {d.code}
+                  </label>
+                ))}
               {departments.length === 0 && <p className="text-xs text-slate-400">No departments available.</p>}
             </div>
           </FieldWrapper>

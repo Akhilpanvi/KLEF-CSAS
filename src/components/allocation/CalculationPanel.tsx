@@ -10,15 +10,13 @@ export function CalculationPanel({ detail }: { detail: GroupDetail }) {
             <thead className="bg-slate-50">
               <tr className="text-left text-slate-500">
                 <th className="px-2 py-1.5">Dept</th>
-                <th className="px-2 py-1.5">Unit</th>
                 <th className="px-2 py-1.5 text-right">Students</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {detail.demandRows.map((r) => (
-                <tr key={r.unitId}>
+                <tr key={r.departmentId}>
                   <td className="px-2 py-1 text-slate-600">{r.departmentCode}</td>
-                  <td className="px-2 py-1 text-slate-600">{r.unitCode}</td>
                   <td className="px-2 py-1 text-right font-medium text-slate-800">{r.studentCount}</td>
                 </tr>
               ))}
@@ -70,15 +68,6 @@ export function CalculationPanel({ detail }: { detail: GroupDetail }) {
           {detail.departmentTotals.map((d) => (
             <p key={d.departmentId} className="font-mono text-slate-500">
               {d.departmentCode} = {d.total}/{detail.grandTotal} = {d.pct}%
-            </p>
-          ))}
-        </div>
-        <div className="mt-2 space-y-0.5 text-xs">
-          {detail.demandRows.map((r) => (
-            <p key={r.unitId} className="font-mono text-slate-400">
-              {r.unitCode} = {r.studentCount}/
-              {detail.departmentTotals.find((d) => d.departmentId === r.departmentId)?.total ?? 0} = {r.pctOfDept}% of{" "}
-              {r.departmentCode}
             </p>
           ))}
         </div>

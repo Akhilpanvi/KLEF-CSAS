@@ -10,7 +10,7 @@ import { getGroupDetail, bumpStatus, clearManualOverrides, type AllocationStatus
 const schema = z.object({
   rules: z.array(
     z.object({
-      unit: z.string().regex(/^[0-9a-fA-F]{24}$/),
+      department: z.string().regex(/^[0-9a-fA-F]{24}$/),
       specialization: z.string().trim().min(1, "Required").max(80),
       cluster: z.union([z.literal(1), z.literal(2)]),
     }),
@@ -31,15 +31,15 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
 
     const current = await getGroupDetail(id);
     if (!current) return fail("Allocation group not found", 404);
-    const validUnitIds = new Set(current.demandRows.map((r) => r.unitId));
+    const validDeptIds = new Set(current.demandRows.map((r) => r.departmentId));
     for (const r of rules) {
-      if (!validUnitIds.has(r.unit)) return fail(`Unit ${r.unit} has no demand in this allocation group`, 422);
+      if (!validDeptIds.has(r.department)) return fail(`Department ${r.department} has no demand in this allocation group`, 422);
     }
 
     await SpecializationClusterRule.deleteMany({ allocationGroup: id });
     if (rules.length > 0) {
       await SpecializationClusterRule.insertMany(
-        rules.map((r) => ({ allocationGroup: id, unit: r.unit, specialization: r.specialization, cluster: r.cluster })),
+        rules.map((r) => ({ allocationGroup: id, department: r.department, specialization: r.specialization, cluster: r.cluster })),
       );
     }
 

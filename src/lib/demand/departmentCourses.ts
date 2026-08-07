@@ -24,12 +24,19 @@ export interface MergedCourse {
   totalStudents: number;
 }
 
-/** Courses offered to `departmentId`, merged with that department's own demand status. */
+/**
+ * Courses visible to `departmentId` for Module 2 demand entry: courses the
+ * department itself offers, plus courses other departments offered to it.
+ * Merged with that department's own demand status.
+ */
 export async function listAvailableCourses(
   departmentId: string,
   filters: AvailableCourseFilters,
 ): Promise<MergedCourse[]> {
-  const courseFilter: Record<string, unknown> = { status: "Active", offeredToDepartments: departmentId };
+  const courseFilter: Record<string, unknown> = {
+    status: "Active",
+    $or: [{ offeredByDepartment: departmentId }, { offeredToDepartments: departmentId }],
+  };
   if (filters.category) courseFilter.courseCategory = filters.category;
   if (filters.regulation) courseFilter.regulation = filters.regulation;
   if (filters.semester) courseFilter.semester = filters.semester;

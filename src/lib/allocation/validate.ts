@@ -45,7 +45,9 @@ export function validateMatrix(
     key: "no_missing",
     label: "No missing allocation",
     passed: missing.length === 0,
-    detail: missing.length ? `Under-allocated: ${missing.map((r) => `${r.unitCode} (${r.allocatedCount}/${r.demandCount})`).join(", ")}` : undefined,
+    detail: missing.length
+      ? `Under-allocated: ${missing.map((r) => `${r.departmentCode} (${r.allocatedCount}/${r.demandCount})`).join(", ")}`
+      : undefined,
   });
 
   const overAllocated = matrix.rows.filter((r) => r.allocatedCount > r.demandCount);
@@ -53,7 +55,9 @@ export function validateMatrix(
     key: "no_duplicate",
     label: "No duplicate allocation",
     passed: overAllocated.length === 0,
-    detail: overAllocated.length ? `Over-allocated: ${overAllocated.map((r) => `${r.unitCode} (${r.allocatedCount}/${r.demandCount})`).join(", ")}` : undefined,
+    detail: overAllocated.length
+      ? `Over-allocated: ${overAllocated.map((r) => `${r.departmentCode} (${r.allocatedCount}/${r.demandCount})`).join(", ")}`
+      : undefined,
   });
 
   // Rows with an explicit specialization → cluster rule must keep every allocated
@@ -68,23 +72,12 @@ export function validateMatrix(
     key: "cluster_totals",
     label: "Cluster totals match",
     passed: clusterLeaks.length === 0,
-    detail: clusterLeaks.length ? `Outside assigned cluster range: ${clusterLeaks.map((r) => r.unitCode).join(", ")}` : undefined,
+    detail: clusterLeaks.length ? `Outside assigned cluster range: ${clusterLeaks.map((r) => r.departmentCode).join(", ")}` : undefined,
   });
 
-  const deptTotals = new Map<string, { demand: number; allocated: number; code: string }>();
-  for (const r of matrix.rows) {
-    if (!deptTotals.has(r.departmentId)) deptTotals.set(r.departmentId, { demand: 0, allocated: 0, code: r.departmentCode });
-    const t = deptTotals.get(r.departmentId)!;
-    t.demand += r.demandCount;
-    t.allocated += r.allocatedCount;
-  }
-  const deptMismatches = Array.from(deptTotals.values()).filter((t) => t.demand !== t.allocated);
-  checks.push({
-    key: "department_totals",
-    label: "Department totals match",
-    passed: deptMismatches.length === 0,
-    detail: deptMismatches.length ? deptMismatches.map((t) => `${t.code} (${t.allocated}/${t.demand})`).join(", ") : undefined,
-  });
+  // Department totals match is intentionally not a separate check: each row
+  // already *is* one department (no unit sub-breakdown), so it would only ever
+  // duplicate no_missing/no_duplicate above.
 
   checks.push({
     key: "course_verified",

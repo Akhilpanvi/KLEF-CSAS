@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/token";
 import { SESSION_COOKIE } from "@/lib/auth/session";
 
-const MODULE1_PREFIXES = ["/courses", "/departments", "/units", "/course-categories", "/regulations", "/semesters"];
+const MODULE1_PREFIXES = ["/courses", "/departments", "/course-categories", "/regulations", "/semesters"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -24,7 +24,7 @@ export async function proxy(req: NextRequest) {
   if (pathname.startsWith("/admin") && !["TIMETABLE_ADMIN", "SUPER_ADMIN"].includes(session.role)) {
     return NextResponse.redirect(new URL("/", req.url));
   }
-  if (MODULE1_PREFIXES.some((p) => pathname.startsWith(p)) && !["SUPER_ADMIN", "COURSE_OWNER"].includes(session.role)) {
+  if (MODULE1_PREFIXES.some((p) => pathname.startsWith(p)) && session.role !== "SUPER_ADMIN") {
     return NextResponse.redirect(new URL("/", req.url));
   }
   if (pathname === "/") {

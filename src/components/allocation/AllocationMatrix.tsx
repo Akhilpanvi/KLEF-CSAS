@@ -10,7 +10,7 @@ export function AllocationMatrix({
 }: {
   detail: GroupDetail;
   readOnly: boolean;
-  onEditCell: (unit: string, sectionNumber: number, studentCount: number) => Promise<void>;
+  onEditCell: (department: string, sectionNumber: number, studentCount: number) => Promise<void>;
 }) {
   const [editing, setEditing] = useState<string | null>(null);
   const sectionNumbers = Array.from({ length: detail.requiredSections }, (_, i) => i + 1);
@@ -19,10 +19,10 @@ export function AllocationMatrix({
     return <p className="text-sm text-slate-400 py-8 text-center">No sections yet — no submitted demand for this course.</p>;
   }
 
-  async function handleBlur(unit: string, sectionNumber: number, raw: string) {
+  async function handleBlur(department: string, sectionNumber: number, raw: string) {
     setEditing(null);
     const value = Math.max(0, Math.floor(Number(raw) || 0));
-    await onEditCell(unit, sectionNumber, value);
+    await onEditCell(department, sectionNumber, value);
   }
 
   return (
@@ -33,9 +33,6 @@ export function AllocationMatrix({
             <th className="px-2 py-2 text-left font-medium text-slate-500 sticky left-0 bg-slate-50 border-b border-r border-slate-200">
               Department
             </th>
-            <th className="px-2 py-2 text-left font-medium text-slate-500 sticky left-[88px] bg-slate-50 border-b border-r border-slate-200">
-              Unit
-            </th>
             {sectionNumbers.map((s) => (
               <th key={s} className="px-2 py-2 text-center font-medium text-slate-500 border-b border-slate-200 min-w-[52px]">
                 S{s}
@@ -45,15 +42,12 @@ export function AllocationMatrix({
         </thead>
         <tbody className="divide-y divide-slate-100">
           {detail.matrix.rows.map((row) => (
-            <tr key={row.unitId} className="hover:bg-slate-50">
+            <tr key={row.departmentId} className="hover:bg-slate-50">
               <td className="px-2 py-1.5 text-slate-600 sticky left-0 bg-white border-r border-slate-100 whitespace-nowrap">
                 {row.departmentCode}
               </td>
-              <td className="px-2 py-1.5 text-slate-600 sticky left-[88px] bg-white border-r border-slate-100 whitespace-nowrap">
-                {row.unitCode}
-              </td>
               {sectionNumbers.map((s) => {
-                const cellKey = `${row.unitId}-${s}`;
+                const cellKey = `${row.departmentId}-${s}`;
                 const value = row.cells[s] ?? 0;
                 const overCapacity = (detail.matrix.sections.find((sec) => sec.sectionNumber === s)?.allocated ?? 0) > detail.sectionCapacity;
                 return (
@@ -67,7 +61,7 @@ export function AllocationMatrix({
                         defaultValue={value}
                         key={editing === cellKey ? undefined : value}
                         onFocus={() => setEditing(cellKey)}
-                        onBlur={(e) => handleBlur(row.unitId, s, e.target.value)}
+                        onBlur={(e) => handleBlur(row.departmentId, s, e.target.value)}
                         className="w-14 px-1 py-1.5 text-center bg-transparent focus:bg-blue-50 focus:outline-none"
                       />
                     )}

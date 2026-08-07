@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Department, Unit, CourseCategory, Regulation, Semester, CourseType, Course, User } from "../src/models";
+import { Department, CourseCategory, Regulation, Semester, CourseType, Course, User } from "../src/models";
 import { hashPassword } from "../src/lib/auth/password";
 
 const MONGODB_URI = process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017/klef_csas";
@@ -28,32 +28,22 @@ async function main() {
   console.log(`Connecting to ${MONGODB_URI} ...`);
   await mongoose.connect(MONGODB_URI);
 
+  // CSE-1/2/3/4, HTE/HTR/HTI etc. are independent departments — never a
+  // sub-unit of a parent "CSE" or "HT" department.
   console.log("Seeding departments...");
   const departments = await upsertMany(Department, "code", [
-    { code: "CSE", name: "Computer Science and Engineering", isActive: true },
+    { code: "CSE-1", name: "Computer Science and Engineering - 1", isActive: true },
+    { code: "CSE-2", name: "Computer Science and Engineering - 2", isActive: true },
+    { code: "CSE-3", name: "Computer Science and Engineering - 3", isActive: true },
+    { code: "CSE-4", name: "Computer Science and Engineering - 4", isActive: true },
+    { code: "ECE", name: "Electronics and Communication Engineering", isActive: true },
     { code: "CSIT", name: "Computer Science and Information Technology", isActive: true },
     { code: "AIDS", name: "Artificial Intelligence and Data Science", isActive: true },
-    { code: "ECE", name: "Electronics and Communication Engineering", isActive: true },
+    { code: "HTE", name: "Honors Track - Electronics", isActive: true },
+    { code: "HTR", name: "Honors Track - Robotics", isActive: true },
+    { code: "HTI", name: "Honors Track - IoT", isActive: true },
   ]);
   const dept = Object.fromEntries(departments.map((d) => [d.code as string, d]));
-
-  console.log("Seeding units...");
-  const unitSeeds = [
-    { code: "CSE-1", name: "CSE Section 1" },
-    { code: "CSE-2", name: "CSE Section 2" },
-    { code: "CSE-3", name: "CSE Section 3" },
-    { code: "CSE-4", name: "CSE Section 4" },
-    { code: "HTE", name: "Honors Track - Electronics" },
-    { code: "HTR", name: "Honors Track - Robotics" },
-    { code: "HTI", name: "Honors Track - IoT" },
-  ];
-  for (const u of unitSeeds) {
-    await Unit.findOneAndUpdate(
-      { code: u.code, parentDepartment: dept.CSE._id },
-      { ...u, parentDepartment: dept.CSE._id, isActive: true },
-      { upsert: true, setDefaultsOnInsert: true },
-    );
-  }
 
   console.log("Seeding course categories...");
   const categories = await upsertMany(CourseCategory, "code", [
@@ -93,15 +83,22 @@ async function main() {
   ]);
   const courseType = Object.fromEntries(courseTypes.map((t) => [t.name as string, t]));
 
-  console.log("Seeding demo users...");
+  console.log("Seeding users...");
   const DEMO_PASSWORD = "Password123!";
   const passwordHash = hashPassword(DEMO_PASSWORD);
+  // Admin accounts use named-person emails; department accounts use a
+  // predictable hod.<department-code>@kluniversity.in pattern — one login
+  // per department, shared by Module 1 (course definition) and Module 2
+  // (course selection + demand).
   const userSeeds = [
-    { name: "Super Admin", email: "super.admin@klef.edu", role: "SUPER_ADMIN" as const },
-    { name: "Course Owner", email: "course.owner@klef.edu", role: "COURSE_OWNER" as const },
-    { name: "Timetable Admin", email: "timetable.admin@klef.edu", role: "TIMETABLE_ADMIN" as const },
-    { name: "CSE Department User", email: "cse.user@klef.edu", role: "DEPARTMENT_USER" as const, department: dept.CSE._id },
-    { name: "CSIT Department User", email: "csit.user@klef.edu", role: "DEPARTMENT_USER" as const, department: dept.CSIT._id },
+    { name: "Dr. Ramesh Babu", email: "ramesh.babu@kluniversity.in", role: "SUPER_ADMIN" as const },
+    { name: "Dr. Lakshmi Priya", email: "lakshmi.priya@kluniversity.in", role: "TIMETABLE_ADMIN" as const },
+    ...departments.map((d) => ({
+      name: `HOD - ${d.name}`,
+      email: `hod.${(d.code as string).toLowerCase().replace(/-/g, "")}@kluniversity.in`,
+      role: "DEPARTMENT_USER" as const,
+      department: d._id,
+    })),
   ];
   for (const u of userSeeds) {
     await User.findOneAndUpdate({ email: u.email }, { ...u, passwordHash, isActive: true }, { upsert: true, setDefaultsOnInsert: true });
@@ -122,8 +119,15 @@ async function main() {
       contactHours: 4,
       credits: 4,
       courseType: courseType.Theory._id,
-      offeredByDepartment: dept.CSE._id,
-      offeredToDepartments: [dept.CSE._id, dept.CSIT._id, dept.AIDS._id, dept.ECE._id],
+      offeredByDepartment: dept["CSE-1"]._id,
+      offeredToDepartments: [
+        dept["CSE-2"]._id,
+        dept["CSE-3"]._id,
+        dept["CSE-4"]._id,
+        dept.ECE._id,
+        dept.CSIT._id,
+        dept.AIDS._id,
+      ],
       courseCoordinatorName: "Dr Lakshmi Narayana",
       courseCoordinatorEmployeeId: "EMP101",
       status: "Active",
@@ -141,8 +145,8 @@ async function main() {
       contactHours: 5,
       credits: 4,
       courseType: courseType["Theory cum Lab"]._id,
-      offeredByDepartment: dept.CSE._id,
-      offeredToDepartments: [dept.CSE._id, dept.CSIT._id],
+      offeredByDepartment: dept["CSE-1"]._id,
+      offeredToDepartments: [dept["CSE-2"]._id, dept["CSE-3"]._id, dept["CSE-4"]._id, dept.CSIT._id],
       courseCoordinatorName: "Dr Ramesh Kumar",
       courseCoordinatorEmployeeId: "EMP102",
       status: "Active",
@@ -160,8 +164,8 @@ async function main() {
       contactHours: 5,
       credits: 4,
       courseType: courseType["Theory cum Lab"]._id,
-      offeredByDepartment: dept.CSE._id,
-      offeredToDepartments: [dept.CSE._id, dept.CSIT._id, dept.AIDS._id],
+      offeredByDepartment: dept.CSIT._id,
+      offeredToDepartments: [dept["CSE-1"]._id, dept["CSE-2"]._id, dept["CSE-3"]._id, dept["CSE-4"]._id, dept.AIDS._id],
       courseCoordinatorName: "Dr Sunitha Reddy",
       courseCoordinatorEmployeeId: "EMP103",
       status: "Active",
@@ -179,12 +183,14 @@ async function main() {
       contactHours: 3,
       credits: 3,
       courseType: courseType.Theory._id,
-      offeredByDepartment: dept.CSE._id,
-      offeredToDepartments: [dept.CSE._id],
+      offeredByDepartment: dept["CSE-2"]._id,
+      offeredToDepartments: [dept["CSE-1"]._id, dept["CSE-3"]._id, dept["CSE-4"]._id],
       courseCoordinatorName: "Dr Anil Varma",
       courseCoordinatorEmployeeId: "EMP104",
       status: "Active",
     },
+    // Same category (PEC-4) as the Data Mining course below, but a different
+    // course — the two MUST stay in separate Module 3 allocation groups.
     {
       regulation: regulation._id,
       semester: semester[5]._id,
@@ -198,8 +204,8 @@ async function main() {
       contactHours: 3,
       credits: 3,
       courseType: courseType.Theory._id,
-      offeredByDepartment: dept.CSE._id,
-      offeredToDepartments: [dept.CSE._id, dept.CSIT._id, dept.AIDS._id],
+      offeredByDepartment: dept["CSE-3"]._id,
+      offeredToDepartments: [dept["CSE-1"]._id, dept["CSE-2"]._id, dept["CSE-4"]._id, dept.AIDS._id],
       courseCoordinatorName: "Dr Example",
       courseCoordinatorEmployeeId: "EMP001",
       status: "Active",
@@ -207,9 +213,9 @@ async function main() {
     {
       regulation: regulation._id,
       semester: semester[5]._id,
-      courseCode: "23CS5102",
-      courseName: "Machine Learning",
-      courseCategory: category["PEC-3"]._id,
+      courseCode: "23AI5102",
+      courseName: "Data Mining",
+      courseCategory: category["PEC-4"]._id,
       L: 3,
       T: 0,
       P: 2,
@@ -218,15 +224,18 @@ async function main() {
       credits: 4,
       courseType: courseType["Theory cum Lab"]._id,
       offeredByDepartment: dept.AIDS._id,
-      offeredToDepartments: [dept.AIDS._id, dept.CSE._id, dept.CSIT._id],
+      offeredToDepartments: [dept["CSE-1"]._id, dept["CSE-2"]._id, dept.CSIT._id],
       courseCoordinatorName: "Dr Sample Rao",
       courseCoordinatorEmployeeId: "EMP002",
       status: "Active",
     },
+    // Matches the spec's worked example: one course offered by CSIT to four
+    // CSE departments plus AIDS and ECE, each submitting an independent count
+    // that Module 3 combines because it's the same course.
     {
       regulation: regulation._id,
       semester: semester[6]._id,
-      courseCode: "23CS6101",
+      courseCode: "23IT6101",
       courseName: "Blockchain Technologies",
       courseCategory: category["PEC-5"]._id,
       L: 3,
@@ -237,7 +246,7 @@ async function main() {
       credits: 3,
       courseType: courseType.Theory._id,
       offeredByDepartment: dept.CSIT._id,
-      offeredToDepartments: [dept.CSIT._id, dept.CSE._id],
+      offeredToDepartments: [dept["CSE-1"]._id, dept["CSE-2"]._id, dept["CSE-3"]._id, dept["CSE-4"]._id, dept.AIDS._id, dept.ECE._id],
       courseCoordinatorName: "Dr Priya Sharma",
       courseCoordinatorEmployeeId: "EMP105",
       status: "Active",
@@ -256,9 +265,30 @@ async function main() {
       credits: 3,
       courseType: courseType.Theory._id,
       offeredByDepartment: dept.ECE._id,
-      offeredToDepartments: [dept.ECE._id],
+      offeredToDepartments: [dept["CSE-1"]._id],
       courseCoordinatorName: "Dr Ganesh Rao",
       courseCoordinatorEmployeeId: "EMP106",
+      status: "Active",
+    },
+    // HTE/HTR/HTI are independent departments (not children of CSE/AIDS/ECE);
+    // this course is offered by one of them but is visible to CSE-1 too.
+    {
+      regulation: regulation._id,
+      semester: semester[6]._id,
+      courseCode: "23HT6101",
+      courseName: "Cyber Security Fundamentals",
+      courseCategory: category["PEC-2"]._id,
+      L: 2,
+      T: 0,
+      P: 2,
+      S: 0,
+      contactHours: 4,
+      credits: 3,
+      courseType: courseType["Theory cum Lab"]._id,
+      offeredByDepartment: dept.HTE._id,
+      offeredToDepartments: [dept.HTR._id, dept.HTI._id, dept["CSE-1"]._id],
+      courseCoordinatorName: "Dr Meena Iyer",
+      courseCoordinatorEmployeeId: "EMP107",
       status: "Active",
     },
     {
@@ -274,10 +304,10 @@ async function main() {
       contactHours: 2,
       credits: 0,
       courseType: courseType["Mandatory Non-Credit Course"]._id,
-      offeredByDepartment: dept.CSE._id,
-      offeredToDepartments: [dept.CSE._id, dept.CSIT._id, dept.AIDS._id, dept.ECE._id],
+      offeredByDepartment: dept["CSE-1"]._id,
+      offeredToDepartments: [dept["CSE-2"]._id, dept["CSE-3"]._id, dept["CSE-4"]._id, dept.CSIT._id, dept.AIDS._id, dept.ECE._id],
       courseCoordinatorName: "Dr Meena Iyer",
-      courseCoordinatorEmployeeId: "EMP107",
+      courseCoordinatorEmployeeId: "EMP108",
       status: "Active",
     },
     {
@@ -293,10 +323,10 @@ async function main() {
       contactHours: 6,
       credits: 3,
       courseType: courseType.Project._id,
-      offeredByDepartment: dept.CSE._id,
-      offeredToDepartments: [dept.CSE._id],
+      offeredByDepartment: dept["CSE-1"]._id,
+      offeredToDepartments: [dept["CSE-2"]._id],
       courseCoordinatorName: "Dr Vinay Kumar",
-      courseCoordinatorEmployeeId: "EMP108",
+      courseCoordinatorEmployeeId: "EMP109",
       status: "Active",
     },
   ];

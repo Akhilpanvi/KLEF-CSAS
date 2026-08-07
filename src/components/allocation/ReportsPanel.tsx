@@ -7,7 +7,7 @@ const REPORT_TYPES: { type: string; label: string }[] = [
   { type: "course", label: "Course-wise" },
   { type: "category", label: "Category-wise" },
   { type: "department", label: "Department-wise" },
-  { type: "unit", label: "Unit-wise" },
+  { type: "allocation", label: "Allocation Detail" },
   { type: "section", label: "Section-wise" },
   { type: "cluster", label: "Cluster summary" },
 ];

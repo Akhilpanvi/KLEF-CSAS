@@ -75,7 +75,7 @@ export default function AllocationGroupDetailPage() {
     }
   }
 
-  async function handleSaveRules(rules: { unit: string; specialization: string; cluster: 1 | 2 }[]) {
+  async function handleSaveRules(rules: { department: string; specialization: string; cluster: 1 | 2 }[]) {
     try {
       await apiPut(`/api/allocation/groups/${groupId}/specialization-rules`, { rules });
       toast.success("Specialization mapping saved");
@@ -85,9 +85,9 @@ export default function AllocationGroupDetailPage() {
     }
   }
 
-  async function handleEditCell(unit: string, sectionNumber: number, studentCount: number) {
+  async function handleEditCell(department: string, sectionNumber: number, studentCount: number) {
     try {
-      await apiPatch(`/api/allocation/groups/${groupId}/matrix`, { unit, sectionNumber, studentCount });
+      await apiPatch(`/api/allocation/groups/${groupId}/matrix`, { department, sectionNumber, studentCount });
       await revalidate();
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "Failed to update cell");

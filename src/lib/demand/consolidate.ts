@@ -1,12 +1,10 @@
 import { CourseDemand } from "@/models/CourseDemand";
-import { CourseDemandItem } from "@/models/CourseDemandItem";
 // Side-effect imports: ensure populate()'d ref models are registered regardless of request order.
 import "@/models/Course";
 import "@/models/Department";
 import "@/models/Regulation";
 import "@/models/Semester";
 import "@/models/CourseCategory";
-import "@/models/Unit";
 
 export interface ConsolidateFilters {
   category?: string;
@@ -21,7 +19,6 @@ interface DeptGroup {
   departmentId: string;
   departmentCode: string;
   departmentName: string;
-  units: { unitId: string; code: string; name: string; count: number }[];
   departmentTotal: number;
 }
 
@@ -38,8 +35,10 @@ interface CourseGroup {
 
 /**
  * Groups submitted demand by Course, then by Department — the shape Module 3
- * will later consume: same category+courseCode across departments combines,
- * different courseCode stays separate even within the same category.
+ * will later consume: same course code across departments combines, different
+ * course codes stay separate even within the same category. Each department
+ * (CSE-1, CSE-2, HTE, ... — all independent, no hierarchy) contributes exactly
+ * one total per course.
  */
 export async function buildConsolidatedView(filters: ConsolidateFilters) {
   const demandFilter: Record<string, unknown> = { status: filters.includeAll ? { $in: ["SUBMITTED", "REOPENED"] } : "SUBMITTED" };
@@ -54,17 +53,6 @@ export async function buildConsolidatedView(filters: ConsolidateFilters) {
     .populate("semester", "number name")
     .populate("courseCategory", "code name")
     .lean();
-
-  const demandIds = demands.map((d) => d._id);
-  const items = await CourseDemandItem.find({ demand: { $in: demandIds } })
-    .populate("unit", "code name")
-    .lean();
-  const itemsByDemand = new Map<string, typeof items>();
-  for (const item of items) {
-    const key = String(item.demand);
-    if (!itemsByDemand.has(key)) itemsByDemand.set(key, []);
-    itemsByDemand.get(key)!.push(item);
-  }
 
   const courseMap = new Map<string, CourseGroup>();
   for (const d of demands) {
@@ -89,23 +77,15 @@ export async function buildConsolidatedView(filters: ConsolidateFilters) {
     }
     const group = courseMap.get(courseId)!;
 
-    const demandItems = itemsByDemand.get(String(d._id)) ?? [];
-    const units = demandItems.map((i) => {
-      const unit = i.unit as unknown as { _id: unknown; code: string; name: string };
-      return { unitId: String(unit._id), code: unit.code, name: unit.name, count: i.studentCount };
-    });
-    const departmentTotal = units.reduce((sum, u) => sum + u.count, 0);
-
     group.departments.push({
       demandId: String(d._id),
       status: d.status,
       departmentId: String(department._id),
       departmentCode: department.code,
       departmentName: department.name,
-      units,
-      departmentTotal,
+      departmentTotal: d.totalStudents,
     });
-    group.courseTotal += departmentTotal;
+    group.courseTotal += d.totalStudents;
   }
 
   const courses = Array.from(courseMap.values()).sort((a, b) => a.courseCode.localeCompare(b.courseCode));

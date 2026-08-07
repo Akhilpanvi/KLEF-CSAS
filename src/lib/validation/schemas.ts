@@ -19,14 +19,6 @@ export const departmentInputSchema = z.object({
 });
 export type DepartmentInput = z.infer<typeof departmentInputSchema>;
 
-export const unitInputSchema = z.object({
-  code: codeSchema,
-  name: nameSchema,
-  parentDepartment: objectIdSchema,
-  isActive: z.boolean().optional().default(true),
-});
-export type UnitInput = z.infer<typeof unitInputSchema>;
-
 export const courseCategoryInputSchema = z.object({
   code: codeSchema,
   name: nameSchema,

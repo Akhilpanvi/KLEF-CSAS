@@ -16,7 +16,6 @@ interface DeptGroup {
   status: string;
   departmentCode: string;
   departmentName: string;
-  units: { unitId: string; code: string; name: string; count: number }[];
   departmentTotal: number;
 }
 
@@ -149,8 +148,11 @@ export default function ConsolidatedDemandPage() {
                 <div className="space-y-3">
                   {c.departments.map((d) => (
                     <div key={d.demandId} className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium text-slate-800">{d.departmentCode}</p>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-slate-800">{d.departmentCode}</p>
+                          <p className="text-xs text-slate-400">{d.departmentName}</p>
+                        </div>
                         <div className="flex items-center gap-3">
                           <p className="text-sm font-medium text-slate-700">Total: {d.departmentTotal}</p>
                           {d.status === "SUBMITTED" && (
@@ -163,14 +165,6 @@ export default function ConsolidatedDemandPage() {
                             </Button>
                           )}
                         </div>
-                      </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-1 text-sm text-slate-600">
-                        {d.units.map((u) => (
-                          <div key={u.unitId} className="flex justify-between">
-                            <span>{u.code}</span>
-                            <span className="font-medium">{u.count}</span>
-                          </div>
-                        ))}
                       </div>
                     </div>
                   ))}

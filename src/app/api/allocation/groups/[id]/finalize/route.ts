@@ -24,14 +24,14 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
       return fail("Allocation is not valid — resolve the failing checks before finalizing", 409, detail.validation);
     }
 
-    // Snapshot the full live matrix (every unit x section cell, including zeros
-    // implicitly by only writing non-zero cells) so it becomes the frozen record.
+    // Snapshot the full live matrix (every department x section cell, including
+    // zeros implicitly by only writing non-zero cells) so it becomes the frozen record.
     const ops = [];
     for (const row of detail.matrix.rows) {
       for (let s = 1; s <= detail.requiredSections; s++) {
         ops.push({
           updateOne: {
-            filter: { allocationGroup: id, unit: row.unitId, sectionNumber: s },
+            filter: { allocationGroup: id, department: row.departmentId, sectionNumber: s },
             update: { $set: { studentCount: row.cells[s] ?? 0 } },
             upsert: true,
           },

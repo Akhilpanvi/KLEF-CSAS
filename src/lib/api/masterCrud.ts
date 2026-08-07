@@ -12,8 +12,7 @@ interface MasterCrudOptions {
 
 /**
  * Generic list+create handlers shared by the small reference-data collections
- * (Department, CourseCategory, Regulation, Semester, CourseType). Unit has its
- * own route because it needs parentDepartment population/filtering.
+ * (Department, CourseCategory, Regulation, Semester, CourseType).
  */
 export function createMasterListHandlers<T>(
   model: Model<T>,

@@ -16,17 +16,17 @@ export function ClusterConfigPanel({
   readOnly: boolean;
   onSaveCapacity: (capacity: number) => Promise<void>;
   onSaveClusters: (cluster1Sections: number | null) => Promise<void>;
-  onSaveRules: (rules: { unit: string; specialization: string; cluster: 1 | 2 }[]) => Promise<void>;
+  onSaveRules: (rules: { department: string; specialization: string; cluster: 1 | 2 }[]) => Promise<void>;
 }) {
   const [capacity, setCapacity] = useState(String(detail.sectionCapacity));
   const [cluster1, setCluster1] = useState(String(detail.clusters.cluster1Sections));
   const [rules, setRules] = useState(
     detail.demandRows.map((r) => {
-      const existing = detail.specializationRules.find((sr) => sr.unitId === r.unitId);
+      const existing = detail.specializationRules.find((sr) => sr.departmentId === r.departmentId);
       return {
-        unitId: r.unitId,
-        unitCode: r.unitCode,
-        specialization: existing?.specialization ?? r.unitCode,
+        departmentId: r.departmentId,
+        departmentCode: r.departmentCode,
+        specialization: existing?.specialization ?? r.departmentCode,
         // null = not yet configured — spreads across all sections rather than
         // being silently pinned to a cluster just because the row was rendered.
         cluster: (existing?.cluster ?? null) as 1 | 2 | null,
@@ -42,11 +42,11 @@ export function ClusterConfigPanel({
     setCluster1(String(detail.clusters.cluster1Sections));
     setRules(
       detail.demandRows.map((r) => {
-        const existing = detail.specializationRules.find((sr) => sr.unitId === r.unitId);
+        const existing = detail.specializationRules.find((sr) => sr.departmentId === r.departmentId);
         return {
-          unitId: r.unitId,
-          unitCode: r.unitCode,
-          specialization: existing?.specialization ?? r.unitCode,
+          departmentId: r.departmentId,
+          departmentCode: r.departmentCode,
+          specialization: existing?.specialization ?? r.departmentCode,
           cluster: (existing?.cluster ?? null) as 1 | 2 | null,
         };
       }),
@@ -141,12 +141,12 @@ export function ClusterConfigPanel({
       <div>
         <FieldWrapper
           label="Specialization → Cluster mapping"
-          hint="Free-text label per unit (not a department). Unassigned units spread across all sections; assigning a cluster restricts that unit to its section range."
+          hint="Free-text label per participating department. Unassigned departments spread across all sections; assigning a cluster restricts that department to its section range."
         >
           <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
             {rules.map((r, idx) => (
-              <div key={r.unitId} className="flex items-center gap-2">
-                <span className="w-16 text-xs text-slate-500 shrink-0">{r.unitCode}</span>
+              <div key={r.departmentId} className="flex items-center gap-2">
+                <span className="w-16 text-xs text-slate-500 shrink-0">{r.departmentCode}</span>
                 <Input
                   value={r.specialization}
                   disabled={readOnly}
@@ -174,7 +174,7 @@ export function ClusterConfigPanel({
                 </div>
               </div>
             ))}
-            {rules.length === 0 && <p className="text-xs text-slate-400">No units with demand yet.</p>}
+            {rules.length === 0 && <p className="text-xs text-slate-400">No departments with demand yet.</p>}
           </div>
         </FieldWrapper>
         <Button
@@ -186,7 +186,9 @@ export function ClusterConfigPanel({
             setSavingRules(true);
             try {
               const configured = rules.filter((r): r is typeof r & { cluster: 1 | 2 } => r.cluster !== null);
-              await onSaveRules(configured.map((r) => ({ unit: r.unitId, specialization: r.specialization, cluster: r.cluster })));
+              await onSaveRules(
+                configured.map((r) => ({ department: r.departmentId, specialization: r.specialization, cluster: r.cluster })),
+              );
             } finally {
               setSavingRules(false);
             }

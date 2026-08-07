@@ -13,13 +13,6 @@ export interface DepartmentDTO extends BaseDTO {
   isActive: boolean;
 }
 
-export interface UnitDTO extends BaseDTO {
-  code: string;
-  name: string;
-  parentDepartment: DepartmentDTO | ID;
-  isActive: boolean;
-}
-
 export interface CourseCategoryDTO extends BaseDTO {
   code: string;
   name: string;
@@ -82,11 +75,6 @@ export interface AvailableCourseDTO {
   totalStudents: number;
 }
 
-export interface DemandItemInput {
-  unit: ID;
-  studentCount: number;
-}
-
 export interface DemandDetailDTO {
   demandId: ID | null;
   status: DemandRowStatus;
@@ -98,8 +86,6 @@ export interface DemandDetailDTO {
     regulation: RegulationDTO;
     semester: SemesterDTO;
   };
-  units: { _id: ID; code: string; name: string }[];
-  items: DemandItemInput[];
   totalStudents: number;
 }
 

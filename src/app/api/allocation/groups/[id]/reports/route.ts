@@ -5,7 +5,7 @@ import { requireSession, requireRole } from "@/lib/auth/session";
 import { getGroupDetail } from "@/lib/allocation/groupService";
 import { buildReportRows, buildReportCsv, type ReportType } from "@/lib/allocation/reports";
 
-const VALID_TYPES: ReportType[] = ["course", "category", "department", "unit", "section", "cluster"];
+const VALID_TYPES: ReportType[] = ["course", "category", "department", "allocation", "section", "cluster"];
 
 export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   try {

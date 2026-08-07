@@ -4,6 +4,7 @@ import { Course, type CourseDoc } from "@/models/Course";
 import { courseInputSchema } from "@/lib/validation/schemas";
 import { dbConnect } from "@/lib/db/connect";
 import { ok, fail, handleApiError } from "@/lib/api-response";
+import { requireSession, requireRole } from "@/lib/auth/session";
 
 const POPULATE_FIELDS: [string, string][] = [
   ["regulation", "code name isActive"],
@@ -16,6 +17,7 @@ const POPULATE_FIELDS: [string, string][] = [
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await requireSession();
     await dbConnect();
     const { searchParams } = new URL(req.url);
     const q = searchParams.get("q")?.trim();
@@ -32,7 +34,12 @@ export async function GET(req: NextRequest) {
     if (category) filter.courseCategory = category as never;
     if (regulation) filter.regulation = regulation as never;
     if (semester) filter.semester = semester as never;
-    if (department) {
+
+    // Module 1: a department login only manages courses it created itself —
+    // ownership always comes from the session, never a client-supplied filter.
+    if (session.role === "DEPARTMENT_USER") {
+      filter.offeredByDepartment = session.department as never;
+    } else if (department) {
       filter.$or = [
         { offeredByDepartment: department as never },
         { offeredToDepartments: department as never },
@@ -68,9 +75,18 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await requireSession();
+    requireRole(session, "SUPER_ADMIN", "DEPARTMENT_USER");
     await dbConnect();
     const body = await req.json();
     const parsed = courseInputSchema.parse(body);
+
+    // Offered By is never client-selectable for a department login — it is
+    // always the authenticated department, to prevent one department from
+    // creating a course on another department's behalf.
+    if (session.role === "DEPARTMENT_USER") {
+      parsed.offeredByDepartment = session.department as string;
+    }
 
     const existing = await Course.findOne({ courseCode: parsed.courseCode.toUpperCase() });
     if (existing) return fail("Course code already exists", 409);
