@@ -3,19 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { getNavItems } from "@/lib/nav";
+import type { SessionPayload } from "@/lib/auth/token";
 
-const NAV_ITEMS = [
-  { href: "/", label: "Dashboard" },
-  { href: "/courses", label: "Course Master" },
-  { href: "/departments", label: "Departments" },
-  { href: "/units", label: "Units" },
-  { href: "/course-categories", label: "Categories" },
-  { href: "/regulations", label: "Regulations" },
-  { href: "/semesters", label: "Semesters" },
-];
-
-export function MobileNav() {
+export function MobileNav({ user }: { user: SessionPayload }) {
   const pathname = usePathname();
+  const NAV_ITEMS = getNavItems(user.role);
 
   return (
     <div className="md:hidden sticky top-0 z-20 bg-white border-b border-slate-200">

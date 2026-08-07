@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+// Registers every model as a side effect so populate() works regardless of
+// which route happens to run first in a fresh process.
+import "@/models";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 

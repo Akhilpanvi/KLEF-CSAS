@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { Department, Unit, CourseCategory, Regulation, Semester, CourseType, Course } from "../src/models";
+import { Department, Unit, CourseCategory, Regulation, Semester, CourseType, Course, User } from "../src/models";
+import { hashPassword } from "../src/lib/auth/password";
 
 const MONGODB_URI = process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017/klef_csas";
 
@@ -91,6 +92,20 @@ async function main() {
     { name: "Mandatory Non-Credit Course", isActive: true },
   ]);
   const courseType = Object.fromEntries(courseTypes.map((t) => [t.name as string, t]));
+
+  console.log("Seeding demo users...");
+  const DEMO_PASSWORD = "Password123!";
+  const passwordHash = hashPassword(DEMO_PASSWORD);
+  const userSeeds = [
+    { name: "Super Admin", email: "super.admin@klef.edu", role: "SUPER_ADMIN" as const },
+    { name: "Course Owner", email: "course.owner@klef.edu", role: "COURSE_OWNER" as const },
+    { name: "Timetable Admin", email: "timetable.admin@klef.edu", role: "TIMETABLE_ADMIN" as const },
+    { name: "CSE Department User", email: "cse.user@klef.edu", role: "DEPARTMENT_USER" as const, department: dept.CSE._id },
+    { name: "CSIT Department User", email: "csit.user@klef.edu", role: "DEPARTMENT_USER" as const, department: dept.CSIT._id },
+  ];
+  for (const u of userSeeds) {
+    await User.findOneAndUpdate({ email: u.email }, { ...u, passwordHash, isActive: true }, { upsert: true, setDefaultsOnInsert: true });
+  }
 
   console.log("Seeding sample courses...");
   const sampleCourses = [
@@ -298,7 +313,10 @@ async function main() {
     semesters: semesters.length,
     courseTypes: courseTypes.length,
     courses: sampleCourses.length,
+    users: userSeeds.length,
   });
+  console.log(`Demo login password for all seeded users: ${DEMO_PASSWORD}`);
+  console.log(userSeeds.map((u) => `${u.role}: ${u.email}`).join("\n"));
 
   await mongoose.disconnect();
 }

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { ToastProvider } from "@/components/ui/Toast";
+import { getSessionUser } from "@/lib/auth/session";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,7 +21,9 @@ export const metadata: Metadata = {
   description: "Module 1: Course Master Management",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const user = await getSessionUser();
+
   return (
     <html
       lang="en"
@@ -28,11 +31,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)]">
         <ToastProvider>
-          <Sidebar />
-          <MobileNav />
-          <div className="md:pl-64">
-            <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</main>
-          </div>
+          {user ? (
+            <>
+              <Sidebar user={user} />
+              <MobileNav user={user} />
+              <div className="md:pl-64">
+                <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+              </div>
+            </>
+          ) : (
+            children
+          )}
         </ToastProvider>
       </body>
     </html>

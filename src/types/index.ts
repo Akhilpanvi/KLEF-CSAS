@@ -66,6 +66,43 @@ export interface CourseDTO extends BaseDTO {
   status: CourseStatus;
 }
 
+export type DemandStatus = "DRAFT" | "SUBMITTED" | "REOPENED";
+/** Virtual status for a course with no demand record yet. */
+export type DemandRowStatus = DemandStatus | "PENDING";
+
+export interface AvailableCourseDTO {
+  _id: ID;
+  courseCode: string;
+  courseName: string;
+  courseCategory: CourseCategoryDTO | ID;
+  regulation: RegulationDTO | ID;
+  semester: SemesterDTO | ID;
+  demandId: ID | null;
+  status: DemandRowStatus;
+  totalStudents: number;
+}
+
+export interface DemandItemInput {
+  unit: ID;
+  studentCount: number;
+}
+
+export interface DemandDetailDTO {
+  demandId: ID | null;
+  status: DemandRowStatus;
+  course: {
+    _id: ID;
+    courseCode: string;
+    courseName: string;
+    courseCategory: CourseCategoryDTO;
+    regulation: RegulationDTO;
+    semester: SemesterDTO;
+  };
+  units: { _id: ID; code: string; name: string }[];
+  items: DemandItemInput[];
+  totalStudents: number;
+}
+
 export interface PaginatedResult<T> {
   items: T[];
   total: number;

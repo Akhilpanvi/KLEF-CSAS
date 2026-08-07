@@ -2,30 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  BookOpen,
-  Building2,
-  Layers,
-  Tags,
-  FileStack,
-  CalendarRange,
-  GraduationCap,
-} from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import clsx from "clsx";
+import { getNavItems } from "@/lib/nav";
+import { LogoutButton } from "./LogoutButton";
+import type { SessionPayload } from "@/lib/auth/token";
 
-const NAV_ITEMS = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/courses", label: "Course Master", icon: BookOpen },
-  { href: "/departments", label: "Departments", icon: Building2 },
-  { href: "/units", label: "Units", icon: Layers },
-  { href: "/course-categories", label: "Course Categories", icon: Tags },
-  { href: "/regulations", label: "Regulations", icon: FileStack },
-  { href: "/semesters", label: "Semesters", icon: CalendarRange },
-];
-
-export function Sidebar() {
+export function Sidebar({ user }: { user: SessionPayload }) {
   const pathname = usePathname();
+  const NAV_ITEMS = getNavItems(user.role);
 
   return (
     <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-slate-200 bg-white">
@@ -60,8 +45,13 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="px-5 py-4 border-t border-slate-200 text-xs text-slate-400">
-        Module 1 — Course Master Management
+      <div className="px-5 py-4 border-t border-slate-200 space-y-1">
+        <p className="text-xs font-medium text-slate-700 truncate">{user.name}</p>
+        <p className="text-[11px] text-slate-400">
+          {user.role.replace("_", " ")}
+          {user.departmentCode ? ` — ${user.departmentCode}` : ""}
+        </p>
+        <LogoutButton />
       </div>
     </aside>
   );
