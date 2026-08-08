@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { GraduationCap } from "lucide-react";
+import Image from "next/image";
 import { FieldWrapper, Input } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -40,9 +40,8 @@ export default function LoginPage() {
       <ThemeToggle className="absolute top-4 right-4" />
       <div className="w-full max-w-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
         <div className="flex flex-col items-center mb-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white mb-2">
-            <GraduationCap size={20} />
-          </div>
+          <Image src="/logo-mark.png" alt="KLEF" width={44} height={44} unoptimized className="mb-2" />
+
           <h1 className="text-base font-semibold text-slate-900 dark:text-slate-100">KLEF CSAS</h1>
           <p className="text-xs text-slate-500 dark:text-slate-400">Course Section Allocation System</p>
         </div>

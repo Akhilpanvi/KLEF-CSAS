@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { getNavItems } from "@/lib/nav";
@@ -14,7 +15,10 @@ export function MobileNav({ user }: { user: SessionPayload }) {
   return (
     <div className="md:hidden sticky top-0 z-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
       <div className="flex items-center justify-between h-14 px-4">
-        <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm">KLEF CSAS</span>
+        <div className="flex items-center gap-2">
+          <Image src="/logo-mark.png" alt="" width={28} height={28} unoptimized />
+          <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm">KLEF CSAS</span>
+        </div>
         <ThemeToggle />
       </div>
       <nav className="flex gap-1 overflow-x-auto px-3 pb-2 text-sm">

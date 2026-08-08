@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap } from "lucide-react";
 import clsx from "clsx";
 import { getNavItems } from "@/lib/nav";
 import { LogoutButton } from "./LogoutButton";
@@ -16,9 +16,8 @@ export function Sidebar({ user }: { user: SessionPayload }) {
   return (
     <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
       <div className="flex items-center gap-2 px-5 h-16 border-b border-slate-200 dark:border-slate-800">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white">
-          <GraduationCap size={20} />
-        </div>
+        <Image src="/logo-mark.png" alt="" width={36} height={36} unoptimized className="shrink-0" />
+
         <div className="leading-tight">
           <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">KLEF CSAS</p>
           <p className="text-xs text-slate-500 dark:text-slate-400">Course Section Allocation</p>
