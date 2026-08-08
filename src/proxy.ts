@@ -38,5 +38,7 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Excludes Next internals plus any static file in public/ (icon.png, logo-mark.png,
+  // the KL_*.png source logos, etc.) — those must be servable pre-login, e.g. on /login itself.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|ico|webp|gif)$).*)"],
 };
