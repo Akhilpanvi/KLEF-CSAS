@@ -1,4 +1,4 @@
-import Papa from "papaparse";
+import * as XLSX from "xlsx";
 import type { GroupDetail } from "./groupService";
 
 export type ReportType = "course" | "category" | "department" | "allocation" | "section" | "cluster";
@@ -68,7 +68,11 @@ export function buildReportRows(detail: GroupDetail, type: ReportType): Record<s
   }
 }
 
-export function buildReportCsv(detail: GroupDetail, type: ReportType): string {
+/** Reports are always downloaded as .xlsx — CSV is reserved for the Module 1 bulk-upload path. */
+export function buildReportXlsx(detail: GroupDetail, type: ReportType): Buffer {
   const rows = buildReportRows(detail, type);
-  return Papa.unparse(rows);
+  const sheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, sheet, "Report");
+  return XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
 }

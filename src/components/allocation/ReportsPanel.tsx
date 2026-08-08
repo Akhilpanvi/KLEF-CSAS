@@ -14,12 +14,12 @@ const REPORT_TYPES: { type: string; label: string }[] = [
 
 export function ReportsPanel({ groupId }: { groupId: string }) {
   async function download(type: string) {
-    const res = await fetch(`/api/allocation/groups/${groupId}/reports?type=${type}&format=csv`);
+    const res = await fetch(`/api/allocation/groups/${groupId}/reports?type=${type}&format=xlsx`);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${type}_report.csv`;
+    link.download = `${type}_report.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
