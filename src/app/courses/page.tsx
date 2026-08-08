@@ -121,8 +121,8 @@ export default function CourseMasterPage() {
         }
       />
 
-      <div className="rounded-xl border border-slate-200 bg-white">
-        <div className="flex flex-col gap-3 border-b border-slate-200 p-4">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-800 p-4">
           <SearchInput value={search} onChange={setSearch} placeholder="Search by code, name or coordinator..." />
           <div className="flex flex-wrap gap-2">
             <Select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className="w-auto">
@@ -171,7 +171,7 @@ export default function CourseMasterPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   <th className="px-4 py-3">Code</th>
                   <th className="px-4 py-3">Name</th>
                   <th className="px-4 py-3">Category</th>
@@ -183,16 +183,16 @@ export default function CourseMasterPage() {
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {data.items.map((course) => (
-                  <tr key={course._id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-900">{course.courseCode}</td>
-                    <td className="px-4 py-3 text-slate-700 max-w-[14rem] truncate">{course.courseName}</td>
-                    <td className="px-4 py-3 text-slate-500">{label(course.courseCategory)}</td>
-                    <td className="px-4 py-3 text-slate-500">{label(course.regulation)}</td>
-                    <td className="px-4 py-3 text-slate-500">{label(course.semester)}</td>
-                    <td className="px-4 py-3 text-slate-500">{course.credits}</td>
-                    <td className="px-4 py-3 text-slate-500">{label(course.offeredByDepartment)}</td>
+                  <tr key={course._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{course.courseCode}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 max-w-[14rem] truncate">{course.courseName}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{label(course.courseCategory)}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{label(course.regulation)}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{label(course.semester)}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{course.credits}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{label(course.offeredByDepartment)}</td>
                     <td className="px-4 py-3">
                       <CourseStatusBadge status={course.status} />
                     </td>

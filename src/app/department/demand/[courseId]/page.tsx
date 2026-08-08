@@ -73,7 +73,7 @@ export default function DemandEntryPage() {
 
   return (
     <div>
-      <Link href="/department/demand" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4">
+      <Link href="/department/demand" className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 mb-4">
         <ArrowLeft size={14} /> Back to Course Demand
       </Link>
 
@@ -83,9 +83,9 @@ export default function DemandEntryPage() {
         actions={<DemandStatusBadge status={detail.status} />}
       />
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-3">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
         <div className="flex items-center justify-between gap-4">
-          <p className="text-sm font-medium text-slate-700">Student Count</p>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Student Count</p>
           <Input
             type="number"
             min={0}

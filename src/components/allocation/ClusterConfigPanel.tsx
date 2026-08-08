@@ -130,7 +130,7 @@ export function ClusterConfigPanel({
           </div>
         </FieldWrapper>
 
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           Cluster 1: {detail.clusters.ranges.cluster1.count > 0 ? `S${detail.clusters.ranges.cluster1.start}-S${detail.clusters.ranges.cluster1.end}` : "—"}{" "}
           ({detail.clusters.cluster1Pct}%) &nbsp;·&nbsp; Cluster 2:{" "}
           {detail.clusters.ranges.cluster2.count > 0 ? `S${detail.clusters.ranges.cluster2.start}-S${detail.clusters.ranges.cluster2.end}` : "—"} (
@@ -146,7 +146,7 @@ export function ClusterConfigPanel({
           <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
             {rules.map((r, idx) => (
               <div key={r.departmentId} className="flex items-center gap-2">
-                <span className="w-16 text-xs text-slate-500 shrink-0">{r.departmentCode}</span>
+                <span className="w-16 text-xs text-slate-500 dark:text-slate-400 shrink-0">{r.departmentCode}</span>
                 <Input
                   value={r.specialization}
                   disabled={readOnly}
@@ -174,7 +174,7 @@ export function ClusterConfigPanel({
                 </div>
               </div>
             ))}
-            {rules.length === 0 && <p className="text-xs text-slate-400">No departments with demand yet.</p>}
+            {rules.length === 0 && <p className="text-xs text-slate-400 dark:text-slate-500">No departments with demand yet.</p>}
           </div>
         </FieldWrapper>
         <Button

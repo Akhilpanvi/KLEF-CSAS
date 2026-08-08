@@ -63,8 +63,8 @@ export default function RegulationsPage() {
         }
       />
 
-      <div className="rounded-xl border border-slate-200 bg-white">
-        <div className="flex flex-col gap-3 border-b border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-800 p-4 sm:flex-row sm:items-center sm:justify-between">
           <SearchInput value={search} onChange={setSearch} placeholder="Search by code..." />
           <Select
             value={status}
@@ -90,18 +90,18 @@ export default function RegulationsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   <th className="px-4 py-3">Code</th>
                   <th className="px-4 py-3">Description</th>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {data.items.map((reg) => (
-                  <tr key={reg._id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-900">{reg.code}</td>
-                    <td className="px-4 py-3 text-slate-500">{reg.name || "—"}</td>
+                  <tr key={reg._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{reg.code}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{reg.name || "—"}</td>
                     <td className="px-4 py-3">
                       <StatusBadge isActive={reg.isActive} />
                     </td>

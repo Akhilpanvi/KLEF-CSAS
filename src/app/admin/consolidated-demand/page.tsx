@@ -91,8 +91,8 @@ export default function ConsolidatedDemandPage() {
         description="Read-only view of submitted department demand, grouped by course. Feeds Module 3."
       />
 
-      <div className="rounded-xl border border-slate-200 bg-white">
-        <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 p-4">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 p-4">
           <Select value={category} onChange={(e) => setCategory(e.target.value)} className="w-auto">
             <option value="">All categories</option>
             {categories.map((c) => (
@@ -117,7 +117,7 @@ export default function ConsolidatedDemandPage() {
               </option>
             ))}
           </Select>
-          <label className="flex items-center gap-1.5 text-sm text-slate-600 ml-1">
+          <label className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400 ml-1">
             <Checkbox checked={includeAll} onChange={(e) => setIncludeAll(e.target.checked)} />
             Include reopened
           </label>
@@ -130,31 +130,31 @@ export default function ConsolidatedDemandPage() {
         )}
 
         {!loading && !error && courses.length > 0 && (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {courses.map((c) => (
               <div key={c.courseId} className="p-5">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {c.courseCategory.code} | {c.courseName}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
                       {c.courseCode} · {c.regulation.code} · {c.semester.name}
                     </p>
                   </div>
-                  <p className="text-sm font-semibold text-slate-700">Course Total: {c.courseTotal}</p>
+                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Course Total: {c.courseTotal}</p>
                 </div>
 
                 <div className="space-y-3">
                   {c.departments.map((d) => (
-                    <div key={d.demandId} className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+                    <div key={d.demandId} className="rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-slate-800">{d.departmentCode}</p>
-                          <p className="text-xs text-slate-400">{d.departmentName}</p>
+                          <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{d.departmentCode}</p>
+                          <p className="text-xs text-slate-400 dark:text-slate-500">{d.departmentName}</p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <p className="text-sm font-medium text-slate-700">Total: {d.departmentTotal}</p>
+                          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Total: {d.departmentTotal}</p>
                           {d.status === "SUBMITTED" && (
                             <Button
                               variant="ghost"
@@ -173,7 +173,7 @@ export default function ConsolidatedDemandPage() {
             ))}
 
             <div className="flex justify-end p-5">
-              <p className="text-base font-semibold text-slate-900">Grand Total → {grandTotal}</p>
+              <p className="text-base font-semibold text-slate-900 dark:text-slate-100">Grand Total → {grandTotal}</p>
             </div>
           </div>
         )}

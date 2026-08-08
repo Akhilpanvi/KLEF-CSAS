@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   description: "Module 1: Course Master Management",
 };
 
+// Runs before paint to avoid a light-theme flash: mirrors ThemeToggle's storage key.
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d){document.documentElement.classList.add('dark')}}catch(e){}})();`;
+
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const user = await getSessionUser();
 
@@ -29,6 +32,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)]">
         <ToastProvider>
           {user ? (

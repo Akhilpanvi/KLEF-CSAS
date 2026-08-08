@@ -309,11 +309,11 @@ export function CourseFormModal({ open, onClose, onSaved, course, fixedOfferedBy
             error={errors.offeredToDepartments}
             hint="Select every department this course is offered to."
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 rounded-lg border border-slate-300 p-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 rounded-lg border border-slate-300 dark:border-slate-700 p-3">
               {departments
                 .filter((d) => d._id !== (fixedOfferedBy?.id ?? idOf(course?.offeredByDepartment)))
                 .map((d) => (
-                  <label key={d._id} className="flex items-center gap-2 text-sm text-slate-700">
+                  <label key={d._id} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                     <Checkbox
                       checked={form.offeredToDepartments.includes(d._id)}
                       onChange={() => toggleOfferedTo(d._id)}
@@ -321,7 +321,7 @@ export function CourseFormModal({ open, onClose, onSaved, course, fixedOfferedBy
                     {d.code}
                   </label>
                 ))}
-              {departments.length === 0 && <p className="text-xs text-slate-400">No departments available.</p>}
+              {departments.length === 0 && <p className="text-xs text-slate-400 dark:text-slate-500">No departments available.</p>}
             </div>
           </FieldWrapper>
 

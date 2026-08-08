@@ -41,19 +41,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             className={clsx(
-              "flex items-start gap-2 rounded-lg border px-4 py-3 shadow-lg text-sm bg-white",
-              t.type === "success" ? "border-green-200" : "border-red-200",
+              "flex items-start gap-2 rounded-lg border px-4 py-3 shadow-lg text-sm bg-white dark:bg-slate-900",
+              t.type === "success" ? "border-green-200 dark:border-green-900/50" : "border-red-200 dark:border-red-900/50",
             )}
           >
             {t.type === "success" ? (
-              <CheckCircle2 size={18} className="text-green-600 mt-0.5 shrink-0" />
+              <CheckCircle2 size={18} className="text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
             ) : (
-              <XCircle size={18} className="text-red-600 mt-0.5 shrink-0" />
+              <XCircle size={18} className="text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
             )}
-            <p className="flex-1 text-slate-700">{t.message}</p>
+            <p className="flex-1 text-slate-700 dark:text-slate-300">{t.message}</p>
             <button
               onClick={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))}
-              className="text-slate-400 hover:text-slate-600"
+              className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-400"
             >
               <X size={16} />
             </button>

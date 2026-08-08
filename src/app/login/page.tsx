@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { GraduationCap } from "lucide-react";
 import { FieldWrapper, Input } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { apiPost, ApiError } from "@/lib/apiClient";
 
 export default function LoginPage() {
@@ -35,14 +36,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-800/60 px-4 relative">
+      <ThemeToggle className="absolute top-4 right-4" />
+      <div className="w-full max-w-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
         <div className="flex flex-col items-center mb-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white mb-2">
             <GraduationCap size={20} />
           </div>
-          <h1 className="text-base font-semibold text-slate-900">KLEF CSAS</h1>
-          <p className="text-xs text-slate-500">Course Section Allocation System</p>
+          <h1 className="text-base font-semibold text-slate-900 dark:text-slate-100">KLEF CSAS</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Course Section Allocation System</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

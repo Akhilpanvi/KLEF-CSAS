@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: toggled by ThemeToggle, not just OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f4f6f8;
   --foreground: #101828;
+  color-scheme: light;
+}
+
+:root.dark {
+  --background: #0b1220;
+  --foreground: #e2e8f0;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -20,4 +30,8 @@ body {
 
 ::selection {
   background: #bfdbfe;
+}
+
+.dark ::selection {
+  background: #1e40af;
 }

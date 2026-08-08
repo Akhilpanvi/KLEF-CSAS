@@ -128,7 +128,7 @@ export default function AllocationGroupDetailPage() {
 
   return (
     <div>
-      <Link href="/admin/allocation" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4">
+      <Link href="/admin/allocation" className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 mb-4">
         <ArrowLeft size={14} /> Back to Allocation Dashboard
       </Link>
 
@@ -152,19 +152,19 @@ export default function AllocationGroupDetailPage() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-xs text-slate-400">Total Students</p>
-          <p className="text-2xl font-semibold text-slate-900">{detail.grandTotal}</p>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+          <p className="text-xs text-slate-400 dark:text-slate-500">Total Students</p>
+          <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{detail.grandTotal}</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-xs text-slate-400">Section Capacity / Required Sections</p>
-          <p className="text-2xl font-semibold text-slate-900">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+          <p className="text-xs text-slate-400 dark:text-slate-500">Section Capacity / Required Sections</p>
+          <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
             {detail.sectionCapacity} / {detail.requiredSections}
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-xs text-slate-400">Clusters</p>
-          <p className="text-sm font-medium text-slate-900">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+          <p className="text-xs text-slate-400 dark:text-slate-500">Clusters</p>
+          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
             C1: {detail.clusters.ranges.cluster1.count > 0 ? `S${detail.clusters.ranges.cluster1.start}-S${detail.clusters.ranges.cluster1.end}` : "—"}
             {"  ·  "}
             C2: {detail.clusters.ranges.cluster2.count > 0 ? `S${detail.clusters.ranges.cluster2.start}-S${detail.clusters.ranges.cluster2.end}` : "—"}
@@ -172,8 +172,8 @@ export default function AllocationGroupDetailPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5 mb-4">
-        <h2 className="text-sm font-semibold text-slate-800 mb-4">Section Capacity, Clusters &amp; Specialization Mapping</h2>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 mb-4">
+        <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-4">Section Capacity, Clusters &amp; Specialization Mapping</h2>
         <ClusterConfigPanel
           detail={detail}
           readOnly={Boolean(readOnly)}
@@ -184,22 +184,22 @@ export default function AllocationGroupDetailPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4">
-        <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="text-sm font-semibold text-slate-800 mb-3">Live Calculation</h2>
+        <div className="lg:col-span-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+          <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-3">Live Calculation</h2>
           <CalculationPanel detail={detail} />
         </div>
-        <div className="lg:col-span-3 rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="text-sm font-semibold text-slate-800 mb-3">Section Allocation Matrix</h2>
+        <div className="lg:col-span-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+          <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-3">Section Allocation Matrix</h2>
           <AllocationMatrix detail={detail} readOnly={Boolean(readOnly)} onEditCell={handleEditCell} />
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5 mb-4">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 mb-4">
         <ValidationPanel validation={detail.validation} />
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5">
-        <h2 className="text-sm font-semibold text-slate-800 mb-3">Reports</h2>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+        <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-3">Reports</h2>
         <ReportsPanel groupId={detail.groupId} />
       </div>
 

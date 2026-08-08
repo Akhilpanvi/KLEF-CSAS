@@ -44,11 +44,11 @@ export function ConfirmDialog({
     >
       <div className="flex gap-3">
         {destructive && (
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50">
-            <AlertTriangle size={20} className="text-red-600" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 dark:bg-red-950/40">
+            <AlertTriangle size={20} className="text-red-600 dark:text-red-400" />
           </div>
         )}
-        <p className="text-sm text-slate-600 pt-1.5">{description}</p>
+        <p className="text-sm text-slate-600 dark:text-slate-400 pt-1.5">{description}</p>
       </div>
     </Modal>
   );

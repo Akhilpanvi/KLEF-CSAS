@@ -146,10 +146,10 @@ export function CsvImportWizard({ open, onClose, onImported }: CsvImportWizardPr
     >
       {step === "upload" && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between rounded-lg border border-dashed border-slate-300 p-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between rounded-lg border border-dashed border-slate-300 dark:border-slate-700 p-4">
             <div>
-              <p className="text-sm font-medium text-slate-700">Need the template?</p>
-              <p className="text-xs text-slate-500">Download a sample CSV with the expected columns and format.</p>
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Need the template?</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Download a sample CSV with the expected columns and format.</p>
             </div>
             <Button variant="secondary" size="sm" onClick={handleDownloadSample}>
               <Download size={14} /> Download Sample CSV
@@ -158,13 +158,13 @@ export function CsvImportWizard({ open, onClose, onImported }: CsvImportWizardPr
 
           <label
             htmlFor="csv-file"
-            className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 px-6 py-10 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30"
+            className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-700 px-6 py-10 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 dark:hover:bg-blue-950/20"
           >
-            <UploadCloud size={28} className="text-slate-400" />
-            <p className="text-sm text-slate-600">
-              {file ? <span className="font-medium text-slate-900">{file.name}</span> : "Click to select a CSV file"}
+            <UploadCloud size={28} className="text-slate-400 dark:text-slate-500" />
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              {file ? <span className="font-medium text-slate-900 dark:text-slate-100">{file.name}</span> : "Click to select a CSV file"}
             </p>
-            <p className="text-xs text-slate-400">Columns must match the sample CSV. Multiple offered-to departments use &quot;|&quot;.</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">Columns must match the sample CSV. Multiple offered-to departments use &quot;|&quot;.</p>
             <input
               ref={fileInputRef}
               id="csv-file"
@@ -180,32 +180,32 @@ export function CsvImportWizard({ open, onClose, onImported }: CsvImportWizardPr
       {step === "preview" && summary && (
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-lg border border-slate-200 p-3 text-center">
-              <p className="text-2xl font-semibold text-slate-900">{summary.totalRows}</p>
-              <p className="text-xs text-slate-500">Total Rows</p>
+            <div className="rounded-lg border border-slate-200 dark:border-slate-800 p-3 text-center">
+              <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{summary.totalRows}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Total Rows</p>
             </div>
-            <div className="rounded-lg border border-green-200 bg-green-50 p-3 text-center">
-              <p className="text-2xl font-semibold text-green-700">{summary.validRows}</p>
-              <p className="text-xs text-green-700">Valid</p>
+            <div className="rounded-lg border border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-950/40 p-3 text-center">
+              <p className="text-2xl font-semibold text-green-700 dark:text-green-400">{summary.validRows}</p>
+              <p className="text-xs text-green-700 dark:text-green-400">Valid</p>
             </div>
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-center">
-              <p className="text-2xl font-semibold text-red-700">{summary.errorRows}</p>
-              <p className="text-xs text-red-700">Errors</p>
+            <div className="rounded-lg border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-3 text-center">
+              <p className="text-2xl font-semibold text-red-700 dark:text-red-400">{summary.errorRows}</p>
+              <p className="text-xs text-red-700 dark:text-red-400">Errors</p>
             </div>
           </div>
 
           {summary.errorRows > 0 && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-slate-700 flex items-center gap-1.5">
-                  <FileWarning size={15} className="text-red-500" /> Rows with errors
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <FileWarning size={15} className="text-red-500 dark:text-red-400" /> Rows with errors
                 </p>
                 <Button variant="secondary" size="sm" onClick={() => handleDownloadErrors(summary.results)}>
                   <Download size={14} /> Download Error CSV
                 </Button>
               </div>
               <ErrorRowsTable results={summary.results} />
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-400 dark:text-slate-500">
                 Correct the highlighted rows in your file (or the downloaded error CSV) and upload again. Only the{" "}
                 {summary.validRows} valid row(s) will be imported if you continue now.
               </p>
@@ -213,7 +213,7 @@ export function CsvImportWizard({ open, onClose, onImported }: CsvImportWizardPr
           )}
 
           {summary.errorRows === 0 && (
-            <p className="text-sm text-green-700 flex items-center gap-1.5">
+            <p className="text-sm text-green-700 dark:text-green-400 flex items-center gap-1.5">
               <CheckCircle2 size={16} /> All rows are valid and ready to import.
             </p>
           )}
@@ -223,24 +223,24 @@ export function CsvImportWizard({ open, onClose, onImported }: CsvImportWizardPr
       {step === "result" && result && (
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-lg border border-slate-200 p-3 text-center">
-              <p className="text-2xl font-semibold text-slate-900">{result.totalRows}</p>
-              <p className="text-xs text-slate-500">Total Rows</p>
+            <div className="rounded-lg border border-slate-200 dark:border-slate-800 p-3 text-center">
+              <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{result.totalRows}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Total Rows</p>
             </div>
-            <div className="rounded-lg border border-green-200 bg-green-50 p-3 text-center">
-              <p className="text-2xl font-semibold text-green-700">{result.imported}</p>
-              <p className="text-xs text-green-700">Imported</p>
+            <div className="rounded-lg border border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-950/40 p-3 text-center">
+              <p className="text-2xl font-semibold text-green-700 dark:text-green-400">{result.imported}</p>
+              <p className="text-xs text-green-700 dark:text-green-400">Imported</p>
             </div>
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-center">
-              <p className="text-2xl font-semibold text-red-700">{result.skipped}</p>
-              <p className="text-xs text-red-700">Skipped</p>
+            <div className="rounded-lg border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/40 p-3 text-center">
+              <p className="text-2xl font-semibold text-red-700 dark:text-red-400">{result.skipped}</p>
+              <p className="text-xs text-red-700 dark:text-red-400">Skipped</p>
             </div>
           </div>
 
           {result.failedRows.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-slate-700">Skipped rows</p>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Skipped rows</p>
                 <Button variant="secondary" size="sm" onClick={() => handleDownloadErrors(result.failedRows)}>
                   <Download size={14} /> Download Error CSV
                 </Button>

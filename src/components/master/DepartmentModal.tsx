@@ -121,7 +121,7 @@ export function DepartmentModal({ open, onClose, onSaved, department }: Departme
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
         </FieldWrapper>
-        <label className="flex items-center gap-2 text-sm text-slate-700">
+        <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
           <Checkbox checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} />
           Active
         </label>

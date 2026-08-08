@@ -57,8 +57,8 @@ export function DemandListPage({
     <div>
       <PageHeader title={title} description={description} />
 
-      <div className="rounded-xl border border-slate-200 bg-white">
-        <div className="flex flex-wrap gap-2 border-b border-slate-200 p-4">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 p-4">
           <Select value={category} onChange={(e) => setCategory(e.target.value)} className="w-auto">
             <option value="">All categories</option>
             {categories.map((c) => (

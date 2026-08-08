@@ -18,8 +18,8 @@ export function Pagination({
   const end = Math.min(page * pageSize, total);
 
   return (
-    <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3 text-sm">
-      <p className="text-slate-500">
+    <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 px-4 py-3 text-sm">
+      <p className="text-slate-500 dark:text-slate-400">
         {total === 0 ? "No results" : `Showing ${start}–${end} of ${total}`}
       </p>
       <div className="flex items-center gap-2">
@@ -31,7 +31,7 @@ export function Pagination({
         >
           <ChevronLeft size={14} /> Prev
         </Button>
-        <span className="text-slate-500 px-1">
+        <span className="text-slate-500 dark:text-slate-400 px-1">
           Page {page} of {Math.max(totalPages, 1)}
         </span>
         <Button

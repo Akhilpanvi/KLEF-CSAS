@@ -13,26 +13,26 @@ interface FieldWrapperProps {
 export function FieldWrapper({ label, htmlFor, error, required, hint, children }: FieldWrapperProps) {
   return (
     <div className="space-y-1">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-700">
+      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-700 dark:text-slate-300">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="text-red-500 dark:text-red-400 ml-0.5">*</span>}
       </label>
       {children}
-      {hint && !error && <p className="text-xs text-slate-400">{hint}</p>}
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {hint && !error && <p className="text-xs text-slate-400 dark:text-slate-500">{hint}</p>}
+      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }
 
 const inputBase =
-  "block w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:bg-slate-50 disabled:text-slate-400";
+  "block w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:bg-slate-50 dark:disabled:bg-slate-800/60 disabled:text-slate-400 dark:disabled:text-slate-500";
 
 export const Input = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement> & { error?: boolean }>(
   function Input({ className, error, ...rest }, ref) {
     return (
       <input
         ref={ref}
-        className={clsx(inputBase, error ? "border-red-300 focus:border-red-400" : "border-slate-300 focus:border-blue-500", className)}
+        className={clsx(inputBase, error ? "border-red-300 dark:border-red-800 focus:border-red-400" : "border-slate-300 dark:border-slate-700 focus:border-blue-500", className)}
         {...rest}
       />
     );
@@ -46,7 +46,7 @@ export const Textarea = forwardRef<
   return (
     <textarea
       ref={ref}
-      className={clsx(inputBase, error ? "border-red-300" : "border-slate-300 focus:border-blue-500", className)}
+      className={clsx(inputBase, error ? "border-red-300 dark:border-red-800" : "border-slate-300 dark:border-slate-700 focus:border-blue-500", className)}
       {...rest}
     />
   );
@@ -59,7 +59,7 @@ export const Select = forwardRef<
   return (
     <select
       ref={ref}
-      className={clsx(inputBase, "bg-white", error ? "border-red-300" : "border-slate-300 focus:border-blue-500", className)}
+      className={clsx(inputBase, "bg-white dark:bg-slate-900", error ? "border-red-300 dark:border-red-800" : "border-slate-300 dark:border-slate-700 focus:border-blue-500", className)}
       {...rest}
     >
       {children}
@@ -72,7 +72,7 @@ export function Checkbox({ className, ...rest }: React.InputHTMLAttributes<HTMLI
     <input
       type="checkbox"
       className={clsx(
-        "h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500/40",
+        "h-4 w-4 rounded border-slate-300 dark:border-slate-700 text-blue-600 dark:text-blue-400 focus:ring-2 focus:ring-blue-500/40",
         className,
       )}
       {...rest}

@@ -61,11 +61,11 @@ export function CourseTypeManagerModal({ open, onClose, courseTypes, onChanged }
         </Button>
       </form>
 
-      <div className="divide-y divide-slate-100 border border-slate-200 rounded-lg max-h-64 overflow-y-auto">
-        {courseTypes.length === 0 && <p className="text-sm text-slate-400 p-3">No course types yet.</p>}
+      <div className="divide-y divide-slate-100 dark:divide-slate-800 border border-slate-200 dark:border-slate-800 rounded-lg max-h-64 overflow-y-auto">
+        {courseTypes.length === 0 && <p className="text-sm text-slate-400 dark:text-slate-500 p-3">No course types yet.</p>}
         {courseTypes.map((ct) => (
           <div key={ct._id} className="flex items-center justify-between px-3 py-2 text-sm">
-            <span className="text-slate-700">{ct.name}</span>
+            <span className="text-slate-700 dark:text-slate-300">{ct.name}</span>
             <div className="flex items-center gap-2">
               <StatusBadge isActive={ct.isActive} />
               <Button variant="ghost" size="sm" onClick={() => toggle(ct)}>

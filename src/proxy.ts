@@ -18,7 +18,9 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (pathname.startsWith("/department") && session.role !== "DEPARTMENT_USER") {
+  // "/department/..." (singular) not "startsWith('/department')" — the latter
+  // would also match "/departments" (plural), the SUPER_ADMIN master-data page.
+  if (pathname.startsWith("/department/") && session.role !== "DEPARTMENT_USER") {
     return NextResponse.redirect(new URL("/", req.url));
   }
   if (pathname.startsWith("/admin") && !["TIMETABLE_ADMIN", "SUPER_ADMIN"].includes(session.role)) {

@@ -12,8 +12,8 @@ function label(value: { code?: string; name?: string } | string | undefined): st
 function Field({ label: l, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{l}</p>
-      <p className="text-sm text-slate-800 mt-0.5">{value}</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">{l}</p>
+      <p className="text-sm text-slate-800 dark:text-slate-200 mt-0.5">{value}</p>
     </div>
   );
 }
@@ -67,7 +67,7 @@ export function CourseDetailsModal({
             value={
               <div className="flex flex-wrap gap-1 mt-1">
                 {offeredTo.map((d, i) => (
-                  <span key={i} className="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                  <span key={i} className="inline-flex rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-400">
                     {label(d)}
                   </span>
                 ))}

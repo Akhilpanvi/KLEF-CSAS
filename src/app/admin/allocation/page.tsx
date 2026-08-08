@@ -27,7 +27,7 @@ export default function AllocationDashboardPage() {
         description="Allocation groups derived from submitted Module 2 demand — one group per Course."
       />
 
-      <div className="rounded-xl border border-slate-200 bg-white">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         {loading && <LoadingState label="Loading allocation groups..." />}
         {!loading && error && <ErrorState message={error} />}
         {!loading && !error && rows.length === 0 && (
@@ -38,7 +38,7 @@ export default function AllocationDashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   <th className="px-4 py-3">Category</th>
                   <th className="px-4 py-3">Code</th>
                   <th className="px-4 py-3">Course</th>
@@ -53,24 +53,24 @@ export default function AllocationDashboardPage() {
                   <th className="px-4 py-3">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((r) => (
-                  <tr key={r.groupId} className="hover:bg-slate-50">
+                  <tr key={r.groupId} className="hover:bg-slate-50 dark:hover:bg-slate-800/60">
                     <td className="px-4 py-3">
-                      <Link href={`/admin/allocation/${r.groupId}`} className="font-semibold text-blue-700 hover:underline">
+                      <Link href={`/admin/allocation/${r.groupId}`} className="font-semibold text-blue-700 dark:text-blue-400 hover:underline">
                         {r.courseCategory.code}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 font-medium text-slate-900">{r.courseCode}</td>
-                    <td className="px-4 py-3 text-slate-700">{r.courseName}</td>
-                    <td className="px-4 py-3 text-slate-500">{r.regulationCode}</td>
-                    <td className="px-4 py-3 text-slate-500">{r.semesterName}</td>
-                    <td className="px-4 py-3 text-slate-500">{r.participatingDepartments.join(", ")}</td>
-                    <td className="px-4 py-3 text-slate-700 font-medium">{r.totalStudents}</td>
-                    <td className="px-4 py-3 text-slate-500">{r.sectionCapacity}</td>
-                    <td className="px-4 py-3 text-slate-500">{r.requiredSections}</td>
-                    <td className="px-4 py-3 text-slate-500">{r.cluster1Sections}</td>
-                    <td className="px-4 py-3 text-slate-500">{r.cluster2Sections}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{r.courseCode}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300">{r.courseName}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{r.regulationCode}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{r.semesterName}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{r.participatingDepartments.join(", ")}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 font-medium">{r.totalStudents}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{r.sectionCapacity}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{r.requiredSections}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{r.cluster1Sections}</td>
+                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{r.cluster2Sections}</td>
                     <td className="px-4 py-3">
                       <AllocationStatusBadge status={r.status} />
                     </td>

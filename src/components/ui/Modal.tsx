@@ -38,20 +38,20 @@ export function Modal({ open, onClose, title, children, footer, size = "md" }: M
 
   return createPortal(
     <div className="fixed inset-0 z-40 flex items-start sm:items-center justify-center p-4 overflow-y-auto">
-      <div className="fixed inset-0 bg-slate-900/50" onClick={onClose} />
+      <div className="fixed inset-0 bg-slate-900/50 dark:bg-black/70" onClick={onClose} />
       <div
-        className={`relative w-full ${SIZE_CLASSES[size]} rounded-xl bg-white shadow-xl my-8`}
+        className={`relative w-full ${SIZE_CLASSES[size]} rounded-xl bg-white dark:bg-slate-900 dark:border dark:border-slate-800 shadow-xl my-8`}
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-5 py-4">
+          <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
+          <button onClick={onClose} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-400">
             <X size={18} />
           </button>
         </div>
         <div className="px-5 py-4 max-h-[70vh] overflow-y-auto">{children}</div>
-        {footer && <div className="flex justify-end gap-2 border-t border-slate-200 px-5 py-3">{footer}</div>}
+        {footer && <div className="flex justify-end gap-2 border-t border-slate-200 dark:border-slate-800 px-5 py-3">{footer}</div>}
       </div>
     </div>,
     document.body,
